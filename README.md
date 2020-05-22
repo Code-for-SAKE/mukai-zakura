@@ -6,6 +6,7 @@
 
 # テスト環境
 各ブランチにpushすると対応するサイトが更新されます。
+注意: 今はpushできない模様
 
 - deploy1
   - http://153.127.39.37/deploy1/mukai-zakura/
