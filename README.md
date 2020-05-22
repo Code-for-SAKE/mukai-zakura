@@ -13,3 +13,5 @@
   - http://153.127.39.37/deploy2/mukai-zakura/
 - deploy3
   - http://153.127.39.37/deploy3/mukai-zakura/
+- master
+  - http://153.127.39.37/mukai-zakura/
