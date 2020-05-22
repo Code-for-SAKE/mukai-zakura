@@ -6,6 +6,10 @@
 
 # テスト環境
 各ブランチにpushすると対応するサイトが更新されます。
-deploy1　: http://153.127.39.37/deploy1/mukai-zakura/
-deploy2　: http://153.127.39.37/deploy2/mukai-zakura/
-deploy3　: http://153.127.39.37/deploy3/mukai-zakura/
+
+- deploy1
+  - http://153.127.39.37/deploy1/mukai-zakura/
+- deploy2
+  - http://153.127.39.37/deploy2/mukai-zakura/
+- deploy3
+  - http://153.127.39.37/deploy3/mukai-zakura/
