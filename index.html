@@ -87,15 +87,15 @@
 
 // [0]:銘柄, [1]:グラフ色, [2]:横軸_味の濃さ（低いほど淡麗）, [3]:縦軸_甘辛（低いほど辛口）
 const datas_sake = [
-  ['純米大吟醸　神の蔵'  , [255,   0,   0],  1,  5]
-, ['純米吟醸　安芸福の神', [  0, 255,   0], -4,  1]
-, ['純米酒'              , [  0,   0, 255], -3,  3]
-, ['純米　生貯蔵酒'      , [255, 255,   0],  3,  3]
-, ['うっぷんばらし'      , [255,   0, 255],  2,  4]
-, ['蔵出し原酒'          , [  0, 255, 255],  5,  2]
-, ['一心'                , [128,   0,   0],  1, -3]
-, ['広島の酒　向井櫻'    , [  0, 128,   0],  2,  2]
-, ['にごり酒'            , [  0,   0, 128],  4,  4]
+  ['純米大吟醸　神の蔵'  , [255,   0,   0],  1,  5, 'detail/product01.html']
+, ['純米吟醸　安芸福の神', [  0, 255,   0], -4,  1, 'detail/pg550.html']
+, ['純米酒'              , [  0,   0, 255], -3,  3, 'detail/pg552.html']
+, ['純米　生貯蔵酒'      , [255, 255,   0],  3,  3, 'detail/pg565.html']
+, ['うっぷんばらし'      , [255,   0, 255],  2,  4, 'detail/pg555.html']
+, ['蔵出し原酒'          , [  0, 255, 255],  5,  2, 'detail/pg557.html']
+, ['一心'                , [128,   0,   0],  1, -3, 'detail/pg559.html']
+, ['広島の酒　向井櫻'    , [  0, 128,   0],  2,  2, 'detail/pg561.html']
+, ['にごり酒'            , [  0,   0, 128],  4,  4, 'detail/pg563.html']
 ];
 
 const ctx_tm = document.getElementById('tasting_map').getContext('2d');
@@ -108,7 +108,7 @@ function drawBackground(target) {
 
     var xscale = target.scales["x-axis-0"];
     var yscale = target.scales["y-axis-0"];
-    var left = xscale.left;
+    var left = xscale.getPixelForValue(-5);
     var top = yscale.getPixelForValue(5);
 		var bottom = yscale.getPixelForValue(-5);
 		var right = xscale.getPixelForValue(5);
@@ -126,7 +126,8 @@ function draw_chart(){
 			label: list[0],
 			data: [{x: list[2], y: list[3]}],
 			backgroundColor: rgba,
-			radius: 20
+			radius: 20,
+			href: list[4]
 		});
 	}
 
@@ -172,7 +173,14 @@ function draw_chart(){
 							suggestedMax:  5
 						}
 					}]
-				}
+				},
+				onClick: function (e, el) {
+            if (! el || el.length === 0) return;
+						data = el[0]._chart.data.datasets[el[0]._datasetIndex];
+						console.log('onClick : label ' + data.label);
+						console.log('onClick : href ' + data.href);
+						location.href= data.href;
+        }
 			}
 		});
 
