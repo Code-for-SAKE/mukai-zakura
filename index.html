@@ -284,7 +284,12 @@ function draw_chart(){
 						console.log('onClick : label ' + data.label);
 						console.log('onClick : href ' + data.href);
 						location.href= data.href;
-        }
+        },
+				hover: {
+		      onHover: function(e, el) {
+		        $("#tasting_map").css("cursor", el[0] ? "pointer" : "default");
+		      }
+		    }
 			}
 		});
 		new Chart(ctx_rc, {
