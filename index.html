@@ -89,25 +89,25 @@
 </div>
 <script>
 
-// [0]:銘柄, [1]:グラフ色, [2]:横軸_味の濃さ（低いほど淡麗）, [3]:縦軸_甘辛（低いほど辛口）, [4]精米歩合, [5]URL
-const datas_sake = [
-  ['純米大吟醸　神の蔵'  , [255,   0,   0],  1,  4, 50, 'detail/product01.html', [7, 9, 3, 7, 2, 5]]
-, ['純米吟醸　安芸福の神', [  0, 255,   0], -4,  1, 55, 'detail/pg550.html', [2, 3, 4, 1, 8, 3]]
-, ['純米酒'              , [  0,   0, 255], -3,  3, 60, 'detail/pg552.html', [9, 2, 2, 2, 2, 2]]
-, ['純米　生貯蔵酒'      , [255, 255,   0],  3,  3, 70, 'detail/pg565.html', [5, 5, 5, 5, 5, 5]]
-, ['うっぷんばらし'      , [255,   0, 255],  2,  4, 70, 'detail/pg555.html', [5, 3, 5, 3, 5, 3]]
-, ['蔵出し原酒'          , [  0, 255, 255],  4,  2, 55, 'detail/pg557.html', [4, 5, 9, 8, 4, 8]]
-, ['一心'                , [128,   0,   0],  1, -3, 55, 'detail/pg559.html', [9, 9, 9, 1, 1, 1]]
-, ['広島の酒　向井櫻'    , [  0, 128,   0],  2,  2, 60, 'detail/pg561.html', [1, 3, 5, 7, 9, 7]]
-, ['にごり酒'            , [  0,   0, 128],  4,  4, 65, 'detail/pg563.html', [6, 7, 6, 6, 3, 6]]
+<script>
+
+// [0]:銘柄, [2]:横軸_味の濃さ（低いほど淡麗）, [3]:縦軸_甘辛（低いほど辛口）, [4]精米歩合, [5]URL
+var datas_sake = [
+  ['純米大吟醸　神の蔵'  ,  1,  4, 50, 'detail/product01.html', [7, 9, 3, 7, 2, 5]]
+, ['純米吟醸　安芸福の神',  -4,  1, 55, 'detail/pg550.html', [2, 3, 4, 1, 8, 3]]
+, ['純米酒'              ,  -3,  3, 60, 'detail/pg552.html', [9, 2, 2, 2, 2, 2]]
+, ['純米　生貯蔵酒'      ,   3,  3, 70, 'detail/pg565.html', [5, 5, 5, 5, 5, 5]]
+, ['うっぷんばらし'      ,  2,  4, 70, 'detail/pg555.html', [5, 3, 5, 3, 5, 3]]
+, ['蔵出し原酒'          ,  4,  2, 55, 'detail/pg557.html', [4, 5, 9, 8, 4, 8]]
+, ['一心'                ,  1, -3, 55, 'detail/pg559.html', [9, 9, 9, 1, 1, 1]]
+, ['広島の酒　向井櫻'    ,   2,  2, 60, 'detail/pg561.html', [1, 3, 5, 7, 9, 7]]
+, ['にごり酒'            , 4,  4, 65, 'detail/pg563.html', [6, 7, 6, 6, 3, 6]]
 ];
 
 const radar_labels = ['硬度柔度', '精米歩合', '日本酒度', '酸度', 'アミノ酸度', 'アルコール度数' ];
 
 const ctx_tm = document.getElementById('tasting_map').getContext('2d');
 const ctx_rc = document.getElementById('radar_chart').getContext('2d');
-//var img01 = new Image();
-//img01.src = "bg.svg";
 window.addEventListener('load', draw_chart);
 const RADIUS_SCALE = 0.3;
 
@@ -132,7 +132,6 @@ function drawBackground(target) {
 			margin = (height - width) / 2;
 		}
 
-		//ctx_tm.drawImage(img01, 0,0, 640, 640, left, top, right-left, bottom-top);
 		ctx_tm.font = "bold 15px Arial, meiryo, sans-serif" ;
 
 		ctx_tm.beginPath();
@@ -205,25 +204,18 @@ function draw_chart(){
 	let rgba = '';
 	for (let list of datas_sake) {
 
-		rgba = 'rgba(' + list[1][0] + ',' + list[1][1] + ',' + list[1][2] + ',0.4)';
 		datas_tm.push({
 			label: list[0],
-			data: [{x: list[2], y: list[3], r: list[4]*RADIUS_SCALE}],
-//			backgroundColor: rgba,
-			href: list[5]
+			data: [{x: list[1], y: list[2], r: list[3]*RADIUS_SCALE}],
+			href: list[4]
 		});
 
 		// レーダーチャート用データセット作成
-		let rgba_02 = 'rgba(' + list[1][0] + ',' + list[1][1] + ',' + list[1][2] + ',0.1)';
-		let rgba_10 = 'rgba(' + list[1][0] + ',' + list[1][1] + ',' + list[1][2] + ',0.2)';
 		datas_rc.push({
 			label: list[0],
-//			backgroundColor: rgba_02,
-//			borderColor: rgba_10,
-//			pointBackgroundColor: rgba_10,
 			hitRadius: 2,
-			href: list[5],
-			data: list[6]
+			href: list[4],
+			data: list[5]
 		});
 
 	}
