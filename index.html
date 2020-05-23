@@ -131,7 +131,8 @@ function drawBackground(target) {
 			margin = (height - width) / 2;
 		}
 
-		ctx_tm.font = "bold 15px Arial, meiryo, sans-serif" ;
+		var fontSize = 15;
+		ctx_tm.font = "bold "+ fontSize +"px Arial, meiryo, sans-serif" ;
 
 		ctx_tm.beginPath();
 		ctx_tm.fillStyle = "rgba(255, 0, 0, 0.2)";
@@ -167,16 +168,16 @@ function drawBackground(target) {
 		var textWidth = 0;
 		text = '熟酒';
 		textWidth = ctx_tm.measureText( text ).width;
-		ctx_tm.fillText( text, xscale.getPixelForValue(2.5)-(textWidth/2), yscale.getPixelForValue(2.5)) ;
+		ctx_tm.fillText( text, xscale.getPixelForValue(2.5)-(textWidth/2), yscale.getPixelForValue(2.5)-(fontSize/2)) ;
 		text = '薫酒';
 		textWidth = ctx_tm.measureText( text ).width;
-		ctx_tm.fillText( text, xscale.getPixelForValue(-2.5)-(textWidth/2), yscale.getPixelForValue(2.5)) ;
+		ctx_tm.fillText( text, xscale.getPixelForValue(-2.5)-(textWidth/2), yscale.getPixelForValue(2.5)-(fontSize/2)) ;
 		text = '酵酒';
 		textWidth = ctx_tm.measureText( text ).width;
-		ctx_tm.fillText( text, xscale.getPixelForValue(2.5)-(textWidth/2), yscale.getPixelForValue(-2.5)) ;
+		ctx_tm.fillText( text, xscale.getPixelForValue(2.5)-(textWidth/2), yscale.getPixelForValue(-2.5)-(fontSize/2)) ;
 		text = '爽酒';
 		textWidth = ctx_tm.measureText( text ).width;
-		ctx_tm.fillText( text, xscale.getPixelForValue(-2.5)-(textWidth/2), yscale.getPixelForValue(-2.5)) ;
+		ctx_tm.fillText( text, xscale.getPixelForValue(-2.5)-(textWidth/2), yscale.getPixelForValue(-2.5)-(fontSize/2)) ;
 		text = '香が豊か';
 		textWidth = ctx_tm.measureText( text ).width;
 		ctx_tm.fillText( text, xscale.getPixelForValue(0)-(textWidth/2), yscale.getPixelForValue(4.5)) ;
