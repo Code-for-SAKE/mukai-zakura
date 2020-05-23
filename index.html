@@ -78,30 +78,54 @@
 </div>
 </div>
 
-<div class="div_tm" style="position: relative; height:800px; width:800px">
+<div class="div_tm" style="position: relative; width:100%; padding:20px">
 	<canvas id="tasting_map"></canvas>
 </div>
-
+<div class="div_tm" style="position: relative; height:800px; width:800px">
+	<canvas id="radar_chart"></canvas>
+</div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 <script>
 
-// [0]:銘柄, [1]:グラフ色, [2]:横軸_味の濃さ（低いほど淡麗）, [3]:縦軸_甘辛（低いほど辛口）
+// [0]:銘柄, [1]:グラフ色, [2]:横軸_味の濃さ（低いほど淡麗）, [3]:縦軸_甘辛（低いほど辛口）, [4]精米歩合, [5]URL
 const datas_sake = [
-  ['純米大吟醸　神の蔵'  , [255,   0,   0],  1,  5]
-, ['純米吟醸　安芸福の神', [  0, 255,   0], -4,  1]
-, ['純米酒'              , [  0,   0, 255], -3,  3]
-, ['純米　生貯蔵酒'      , [255, 255,   0],  3,  3]
-, ['うっぷんばらし'      , [255,   0, 255],  2,  4]
-, ['蔵出し原酒'          , [  0, 255, 255],  5,  2]
-, ['一心'                , [128,   0,   0],  1, -3]
-, ['広島の酒　向井櫻'    , [  0, 128,   0],  2,  2]
-, ['にごり酒'            , [  0,   0, 128],  4,  4]
+  ['純米大吟醸　神の蔵'  , [255,   0,   0],  1,  4, 50, 'detail/product01.html', [7, 9, 3, 7, 2, 5]]
+, ['純米吟醸　安芸福の神', [  0, 255,   0], -4,  1, 55, 'detail/pg550.html', [2, 3, 4, 1, 8, 3]]
+, ['純米酒'              , [  0,   0, 255], -3,  3, 60, 'detail/pg552.html', [9, 2, 2, 2, 2, 2]]
+, ['純米　生貯蔵酒'      , [255, 255,   0],  3,  3, 70, 'detail/pg565.html', [5, 5, 5, 5, 5, 5]]
+, ['うっぷんばらし'      , [255,   0, 255],  2,  4, 70, 'detail/pg555.html', [5, 3, 5, 3, 5, 3]]
+, ['蔵出し原酒'          , [  0, 255, 255],  4,  2, 55, 'detail/pg557.html', [4, 5, 9, 8, 4, 8]]
+, ['一心'                , [128,   0,   0],  1, -3, 55, 'detail/pg559.html', [9, 9, 9, 1, 1, 1]]
+, ['広島の酒　向井櫻'    , [  0, 128,   0],  2,  2, 60, 'detail/pg561.html', [1, 3, 5, 7, 9, 7]]
+, ['にごり酒'            , [  0,   0, 128],  4,  4, 65, 'detail/pg563.html', [6, 7, 6, 6, 3, 6]]
 ];
 
+const radar_labels = ['硬度柔度', '精米歩合', '日本酒度', '酸度', 'アミノ酸度', 'アルコール度数' ];
+
 const ctx_tm = document.getElementById('tasting_map').getContext('2d');
+const ctx_rc = document.getElementById('radar_chart').getContext('2d');
 var img01 = new Image();
 img01.src = "bg.png";
 window.addEventListener('load', draw_chart);
+const RADIUS_SCALE = 0.3;
+
+function drawBackground(target) {
+	//Imageオブジェクトを生成して、画像ファイルを先読みしておく
+
+    var xscale = target.scales["x-axis-0"];
+    var yscale = target.scales["y-axis-0"];
+    var left = xscale.getPixelForValue(-5);
+    var top = yscale.getPixelForValue(5);
+		var bottom = yscale.getPixelForValue(-5);
+		var right = xscale.getPixelForValue(5);
+
+		ctx_tm.drawImage(img01, 0,0, 400, 321, left, top, right-left, bottom-top);
+}
+
+function calcLabel(tooltipItems, data) {
+	var item = data.datasets[tooltipItems.datasetIndex];
+	return item.label + "：精米歩合" + (item.data[0].r / RADIUS_SCALE);
+}
 
 function drawBackground(target) {
 	//Imageオブジェクトを生成して、画像ファイルを先読みしておく
@@ -117,39 +141,60 @@ function drawBackground(target) {
 }
 
 function draw_chart(){
-	let datas = [];
+	let datas_tm = [];
+	let datas_rc = [];
 	let rgba = '';
 	for (let list of datas_sake) {
 
 		rgba = 'rgba(' + list[1][0] + ',' + list[1][1] + ',' + list[1][2] + ',0.6)';
-		datas.push({
+		datas_tm.push({
 			label: list[0],
-			data: [{x: list[2], y: list[3]}],
+			data: [{x: list[2], y: list[3], r: list[4]*RADIUS_SCALE}],
 			backgroundColor: rgba,
-			radius: 20
+			href: list[5]
 		});
+
+		// レーダーチャート用データセット作成
+		let rgba_02 = 'rgba(' + list[1][0] + ',' + list[1][1] + ',' + list[1][2] + ',0.2)';
+		let rgba_10 = 'rgba(' + list[1][0] + ',' + list[1][1] + ',' + list[1][2] + ',1)';
+		datas_rc.push({
+			label: list[0],
+			backgroundColor: rgba_02,
+			borderColor: rgba_10,
+			pointBackgroundColor: rgba_10,
+			hitRadius: 2,
+			data: list[6]
+		});
+
 	}
 
-	new Chart(ctx_tm, 
+
+	new Chart(ctx_tm,
 		{
 			plugins: [{
 	        beforeDraw: drawBackground
 	    }],
 			type: 'bubble',
 			data: {
-				datasets: datas
+				datasets: datas_tm
 			},
 			options: {
+				tooltips:{
+				    callbacks:
+				    {
+				        label: calcLabel
+				    }
+				},
 				legend: {
 					display: true,
-					position: 'right',
+					position: 'top',
 					labels: {
-						fontSize: 15,
+						fontSize: 10,
 					}
 				},
 				scales: {
 					yAxes: [{
-						display: true,
+						display: false,
 						scaleLabel: {
 							display: true,
 							labelString: '辛口　＜＝＝＝＞　甘口',
@@ -161,7 +206,7 @@ function draw_chart(){
 						}
 					}],
 					xAxes: [{
-						display: true,
+						display: false,
 						scaleLabel: {
 							display: true,
 							labelString: '淡麗　＜＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＞　濃潤',
@@ -172,10 +217,39 @@ function draw_chart(){
 							suggestedMax:  5
 						}
 					}]
+				},
+				onClick: function (e, el) {
+            if (! el || el.length === 0) return;
+						data = el[0]._chart.data.datasets[el[0]._datasetIndex];
+						console.log('onClick : label ' + data.label);
+						console.log('onClick : href ' + data.href);
+						location.href= data.href;
+        }
+			}
+		});
+		new Chart(ctx_rc, {
+			type: 'radar',
+			data: {
+				labels: radar_labels,
+				datasets: datas_rc,
+			},
+			options: {
+				scale: {
+					ticks: {
+						max: 10,
+						min: 0,
+						stepSize: 2
+					}
+				},
+				legend: {
+						display: true,
+						position: 'right',
+						labels: {
+							fontSize: 15,
+						}
 				}
 			}
 		});
-
 }
 
 </script>
@@ -433,7 +507,7 @@ function draw_chart(){
 <div class="c-credit c-center">
 <span class=" d-large_font">○お酒は20歳になってから　○飲酒運転は絶対にやめましょう　○飲酒は健康に留意し適量を　○妊娠中や授乳期の飲酒は控えましょう</span>
 <br>
-<span class=" d-large_font">Copyright mukai-zakura.com. All Rights Reserved. </span>
+<span class=" d-large_font">Copyright mukai-zakura.com. All Rights Reserved. deploy1</span>
 </div>
 </div>
 </div>
