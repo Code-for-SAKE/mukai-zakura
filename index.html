@@ -227,22 +227,23 @@ function draw_chart(){
 
 	}
 
-	var plugginOpts = {
-		beforeDraw: drawBackground,
-		colorschemes: {
-			scheme: 'office.Executive6'
-		}
-	};
-
 	new Chart(ctx_tm,
 		{
-			plugins: plugginOpts,
+			plugins: [{
+				beforeDraw: drawBackground
+			}],
 			type: 'bubble',
 			data: {
 				datasets: datas_tm
 			},
 			options: {
+				plugins: 	{
+					colorschemes: {
+						scheme: 'brewer.GnBu9'
+					}
+				},
 				tooltips:{
+						mode: 'nearest',
 				    callbacks:
 				    {
 				        label: calcLabel
@@ -293,6 +294,11 @@ function draw_chart(){
 				datasets: datas_rc,
 			},
 			options: {
+				plugins: 	{
+					colorschemes: {
+						scheme: 'brewer.GnBu9'
+					}
+				},
 				scale: {
 					ticks: {
 						showLabelBackdrop: false,
