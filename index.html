@@ -198,6 +198,19 @@ function calcLabel(tooltipItems, data) {
 	return item.label + "：精米歩合" + (item.data[0].r / RADIUS_SCALE);
 }
 
+function drawBackground(target) {
+	//Imageオブジェクトを生成して、画像ファイルを先読みしておく
+
+    var xscale = target.scales["x-axis-0"];
+    var yscale = target.scales["y-axis-0"];
+    var left = xscale.left;
+    var top = yscale.getPixelForValue(5);
+		var bottom = yscale.getPixelForValue(-5);
+		var right = xscale.getPixelForValue(5);
+
+		ctx_tm.drawImage(img01, 0,0, 400, 321, left, top, right-left, bottom-top);
+}
+
 function draw_chart(){
 	let datas_tm = [];
 	let datas_rc = [];
@@ -306,7 +319,7 @@ function draw_chart(){
 						labels: {
 							fontSize: 10,
 						}
-				},
+				}
 			}
 		});
 }
