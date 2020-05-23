@@ -222,6 +222,7 @@ function draw_chart(){
 //			borderColor: rgba_10,
 //			pointBackgroundColor: rgba_10,
 			hitRadius: 2,
+			href: list[5],
 			data: list[6]
 		});
 
@@ -284,7 +285,10 @@ function draw_chart(){
 						console.log('onClick : label ' + data.label);
 						console.log('onClick : href ' + data.href);
 						location.href= data.href;
-        }
+        },
+	      onHover: function(e, el) {
+	        $("#tasting_map").css("cursor", el[0] ? "pointer" : "default");
+	      }
 			}
 		});
 		new Chart(ctx_rc, {
@@ -312,8 +316,23 @@ function draw_chart(){
 						position: 'top',
 						labels: {
 							fontSize: 10,
-						}
+						},
+						onHover: function(e) {
+			         e.target.style.cursor = 'pointer';
+			      }
 				},
+				onHover: function(e, el) {
+				  if (el.length) e.target.style.cursor = 'pointer';
+				  else e.target.style.cursor = 'default';
+		    },
+				onClick: function (e, el) {
+					e.preventDefault();
+            if (! el || el.length === 0) return;
+						data = el[0]._chart.data.datasets[el[0]._datasetIndex];
+						console.log('onClick : label ' + data.label);
+						console.log('onClick : href ' + data.href);
+						location.href= data.href;
+        },
 			}
 		});
 }
