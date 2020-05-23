@@ -99,29 +99,30 @@ const datas_sake = [
 ];
 
 const ctx_tm = document.getElementById('tasting_map').getContext('2d');
+var img01 = new Image();
+img01.src = "bg.png";
 window.addEventListener('load', draw_chart);
 
 function drawBackground(target) {
 	//Imageオブジェクトを生成して、画像ファイルを先読みしておく
-	var img01 = new Image();
-	img01.src = "bg.png";
 
     var xscale = target.scales["x-axis-0"];
     var yscale = target.scales["y-axis-0"];
     var left = xscale.left;
-    var high_top = yscale.getPixelForValue(35);
+    var top = yscale.getPixelForValue(5);
+		var high_top = yscale.getPixelForValue(35);
     var high_height = yscale.getPixelForValue(25) - high_top; // 夏日
     var low_top = yscale.getPixelForValue(0);
     var low_height = yscale.getPixelForValue(-5) - low_top;   // 真冬日
 
     // 赤い範囲
-//    ctx_tm.fillStyle = "rgba(255, 0, 100, 0.2)";
-//    ctx_tm.fillRect(left, high_top, xscale.width, high_height);
+    ctx_tm.fillStyle = "rgba(255, 0, 100, 0.2)";
+    ctx_tm.fillRect(left, high_top, xscale.width, high_height);
 
     // 青い範囲
-//    ctx_tm.fillStyle = "rgba(0, 100, 255, 0.2)";
-//    ctx_tm.fillRect(left, low_top, xscale.width, low_height);
-		ctx_tm.drawImage(img01, 0, 0);
+    ctx_tm.fillStyle = "rgba(0, 100, 255, 0.2)";
+    ctx_tm.fillRect(left, low_top, xscale.width, low_height);
+		ctx_tm.drawImage(img01, left, top);
 
 }
 
@@ -129,12 +130,12 @@ function draw_chart(){
 	let datas = [];
 	let rgba = '';
 	for (let list of datas_sake) {
-		
+
 		rgba = 'rgba(' + list[1][0] + ',' + list[1][1] + ',' + list[1][2] + ',0.6)';
 		datas.push({
-			label: list[0], 
-			data: [{x: list[2], y: list[3]}], 
-			backgroundColor: rgba, 
+			label: list[0],
+			data: [{x: list[2], y: list[3]}],
+			backgroundColor: rgba,
 			radius: 20
 		});
 	}
@@ -182,7 +183,7 @@ function draw_chart(){
 						}
 					}]
 				}
-			} 
+			}
 		});
 
 }
