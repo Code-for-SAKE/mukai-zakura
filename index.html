@@ -230,7 +230,7 @@ function draw_chart(){
 	var plugginOpts = {
 		beforeDraw: drawBackground,
 		colorschemes: {
-			scheme: 'brewer.Paired12'
+			scheme: 'office.Executive6'
 		}
 	};
 
@@ -329,7 +329,6 @@ function draw_chart(){
 <div style="position: relative; width:100%; ">
 <canvas id="chart_01_sake"></canvas>
 </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.js"></script>
 <script>
 	var ctx_01_sake = document.getElementById('chart_01_sake').getContext('2d');
 	var myRadarChart = new Chart(ctx_01_sake, {
