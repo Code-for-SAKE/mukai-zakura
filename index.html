@@ -227,22 +227,23 @@ function draw_chart(){
 
 	}
 
-	var plugginOpts = {
-		beforeDraw: drawBackground,
-		colorschemes: {
-			scheme: 'brewer.Paired12'
-		}
-	};
-
 	new Chart(ctx_tm,
 		{
-			plugins: plugginOpts,
+			plugins: [{
+				beforeDraw: drawBackground
+			}],
 			type: 'bubble',
 			data: {
 				datasets: datas_tm
 			},
 			options: {
+				plugins: 	{
+					colorschemes: {
+						scheme: 'brewer.GnBu9'
+					}
+				},
 				tooltips:{
+						mode: 'nearest',
 				    callbacks:
 				    {
 				        label: calcLabel
@@ -293,6 +294,11 @@ function draw_chart(){
 				datasets: datas_rc,
 			},
 			options: {
+				plugins: 	{
+					colorschemes: {
+						scheme: 'brewer.GnBu9'
+					}
+				},
 				scale: {
 					ticks: {
 						showLabelBackdrop: false,
@@ -329,7 +335,6 @@ function draw_chart(){
 <div style="position: relative; width:100%; ">
 <canvas id="chart_01_sake"></canvas>
 </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.js"></script>
 <script>
 	var ctx_01_sake = document.getElementById('chart_01_sake').getContext('2d');
 	var myRadarChart = new Chart(ctx_01_sake, {
