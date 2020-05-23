@@ -15,6 +15,7 @@
 - deploy3
   - http://153.127.39.37/deploy3/mukai-zakura/
 - master
+  - https://code-for-sake.github.io/mukai-zakura/
   - http://153.127.39.37/mukai-zakura/
 
 # エンジニアの方へ
