@@ -317,12 +317,11 @@ function draw_chart(){
 				  else e.target.style.cursor = 'default';
 		    },
 				onClick: function (e, el) {
-					e.preventDefault();
-            if (! el || el.length === 0) return;
-						data = el[0]._chart.data.datasets[el[0]._datasetIndex];
-						console.log('onClick : label ' + data.label);
-						console.log('onClick : href ' + data.href);
-						location.href= data.href;
+          if (! el || el.length === 0) return;
+					data = el[0]._chart.data.datasets[el[0]._datasetIndex];
+					console.log('onClick : label ' + data.label);
+					console.log('onClick : href ' + data.href);
+					location.href= data.href;
         },
 			}
 		});
