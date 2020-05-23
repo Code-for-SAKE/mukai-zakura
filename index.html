@@ -110,20 +110,10 @@ function drawBackground(target) {
     var yscale = target.scales["y-axis-0"];
     var left = xscale.left;
     var top = yscale.getPixelForValue(5);
-		var high_top = yscale.getPixelForValue(35);
-    var high_height = yscale.getPixelForValue(25) - high_top; // 夏日
-    var low_top = yscale.getPixelForValue(0);
-    var low_height = yscale.getPixelForValue(-5) - low_top;   // 真冬日
+		var bottom = yscale.getPixelForValue(-5);
+		var right = xscale.getPixelForValue(5);
 
-    // 赤い範囲
-    ctx_tm.fillStyle = "rgba(255, 0, 100, 0.2)";
-    ctx_tm.fillRect(left, high_top, xscale.width, high_height);
-
-    // 青い範囲
-    ctx_tm.fillStyle = "rgba(0, 100, 255, 0.2)";
-    ctx_tm.fillRect(left, low_top, xscale.width, low_height);
-		ctx_tm.drawImage(img01, left, top);
-
+		ctx_tm.drawImage(img01, 0,0, 400, 321, left, top, right-left, bottom-top);
 }
 
 function draw_chart(){
