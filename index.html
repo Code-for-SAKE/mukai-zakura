@@ -99,28 +99,47 @@ const datas_sake = [
 ];
 
 const ctx_tm = document.getElementById('tasting_map').getContext('2d');
+var img01 = new Image();
+img01.src = "bg.png";
 window.addEventListener('load', draw_chart);
+
+function drawBackground(target) {
+	//Imageオブジェクトを生成して、画像ファイルを先読みしておく
+
+    var xscale = target.scales["x-axis-0"];
+    var yscale = target.scales["y-axis-0"];
+    var left = xscale.left;
+    var top = yscale.getPixelForValue(5);
+		var bottom = yscale.getPixelForValue(-5);
+		var right = xscale.getPixelForValue(5);
+
+		ctx_tm.drawImage(img01, 0,0, 400, 321, left, top, right-left, bottom-top);
+}
 
 function draw_chart(){
 	let datas = [];
 	let rgba = '';
 	for (let list of datas_sake) {
-		
+
 		rgba = 'rgba(' + list[1][0] + ',' + list[1][1] + ',' + list[1][2] + ',0.6)';
 		datas.push({
-			label: list[0], 
-			data: [{x: list[2], y: list[3]}], 
-			backgroundColor: rgba, 
+			label: list[0],
+			data: [{x: list[2], y: list[3]}],
+			backgroundColor: rgba,
 			radius: 20
 		});
 	}
 
-	new Chart(ctx_tm, 
+
+	new Chart(ctx_tm,
 		{
-			type: 'bubble', 
-			data: { 
-				datasets: datas 
-			}, 
+			plugins: [{
+	        beforeDraw: drawBackground
+	    }],
+			type: 'bubble',
+			data: {
+				datasets: datas
+			},
 			options: {
 				legend: {
 					display: true,
@@ -155,7 +174,7 @@ function draw_chart(){
 						}
 					}]
 				}
-			} 
+			}
 		});
 
 }
@@ -388,6 +407,7 @@ function draw_chart(){
 <li><a href="guide/policy.html" data-pid="524">プライバシーポリシー</a></li>
 <li><a href="guide/tokutei.html" data-pid="525">特定商取引法に基づく表示</a></li>
 <li><a href="guide/company.html" data-pid="526">会社情報</a></li>
+<li><a href="guide/company.html" data-pid="526">Code for SAKE</a></li>
 </ul>
 </div>
 </nav>
@@ -414,7 +434,7 @@ function draw_chart(){
 <div class="c-credit c-center">
 <span class=" d-large_font">○お酒は20歳になってから　○飲酒運転は絶対にやめましょう　○飲酒は健康に留意し適量を　○妊娠中や授乳期の飲酒は控えましょう</span>
 <br>
-<span class=" d-large_font">Copyright mukai-zakura.com. All Rights Reserved.</span>
+<span class=" d-large_font">Copyright mukai-zakura.com. All Rights Reserved. deploy1</span>
 </div>
 </div>
 </div>
