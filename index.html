@@ -81,6 +81,7 @@
 
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-colorschemes"></script>
+<script type="text/javascript" src="_module/scripts/SakeChart.js"></script>
 <div class="div_tm" style="position: relative; width:100%; padding:5%">
 	<canvas id="tasting_map"></canvas>
 </div>
@@ -90,7 +91,7 @@
 
 <script>
 
-// [0]:銘柄, [2]:横軸_味の濃さ（低いほど淡麗）, [3]:縦軸_甘辛（低いほど辛口）, [4]精米歩合, [5]URL
+// [0]:銘柄, [1]:横軸_味の濃さ（低いほど淡麗）, [2]:縦軸_香り（高いほど豊か）, [3]精米歩合, [4]URL, [5]レーダー['硬度柔度', '精米歩合', '日本酒度', '酸度', 'アミノ酸度', 'アルコール度数' ]
 var datas_sake = [
   ['純米大吟醸　神の蔵'  ,  1,  4, 50, 'detail/product01.html', [7, 9, 3, 7, 2, 5]]
 , ['純米吟醸　安芸福の神',  -4,  1, 55, 'detail/pg550.html', [2, 3, 4, 1, 8, 3]]
@@ -103,229 +104,15 @@ var datas_sake = [
 , ['にごり酒'            , 4,  4, 65, 'detail/pg563.html', [6, 7, 6, 6, 3, 6]]
 ];
 
-const radar_labels = ['硬度柔度', '精米歩合', '日本酒度', '酸度', 'アミノ酸度', 'アルコール度数' ];
+window.addEventListener('load', init);
 
-const ctx_tm = document.getElementById('tasting_map').getContext('2d');
-const ctx_rc = document.getElementById('radar_chart').getContext('2d');
-window.addEventListener('load', draw_chart);
-const RADIUS_SCALE = 0.3;
-
-function drawBackground(target) {
-	//Imageオブジェクトを生成して、画像ファイルを先読みしておく
-
-    var xscale = target.scales["x-axis-0"];
-    var yscale = target.scales["y-axis-0"];
-    var left = xscale.getPixelForValue(-5);
-    var top = yscale.getPixelForValue(5);
-		var bottom = yscale.getPixelForValue(-5);
-		var right = xscale.getPixelForValue(5);
-
-		var height = bottom-top;
-		var width = right-left;
-
-		var len = height;
-		var margin = 0;
-
-		if(height > width){
-			len = width;
-			margin = (height - width) / 2;
-		}
-
-		var fontSize = 15;
-		ctx_tm.font = "bold "+ fontSize +"px Arial, meiryo, sans-serif" ;
-
-		ctx_tm.beginPath();
-		ctx_tm.fillStyle = "rgba(255, 0, 0, 0.2)";
-    ctx_tm.arc(xscale.getPixelForValue(2.5), yscale.getPixelForValue(2.5), 50, 0, Math.PI * 2, true);
-    ctx_tm.fill();
-		ctx_tm.beginPath();
-		ctx_tm.fillStyle = "rgba(0, 255, 0, 0.2)";
-    ctx_tm.arc(xscale.getPixelForValue(-2.5), yscale.getPixelForValue(2.5), 50, 0, Math.PI * 2, true);
-    ctx_tm.fill();
-		ctx_tm.beginPath();
-		ctx_tm.fillStyle = "rgba(255, 255, 0, 0.2)";
-    ctx_tm.arc(xscale.getPixelForValue(2.5), yscale.getPixelForValue(-2.5), 50, 0, Math.PI * 2, true);
-    ctx_tm.fill();
-		ctx_tm.beginPath();
-		ctx_tm.fillStyle = "rgba(0, 0, 255, 0.2)";
-    ctx_tm.arc(xscale.getPixelForValue(-2.5), yscale.getPixelForValue(-2.5), 50, 0, Math.PI * 2, true);
-    ctx_tm.fill();
-
-		ctx_tm.fillStyle = "rgba(128, 128, 128, 1)";
-		ctx_tm.strokeStyle = "rgba(128, 128, 128, 1)";
-		ctx_tm.lineWidth = 2;
-
-		ctx_tm.beginPath();
-		ctx_tm.moveTo( xscale.getPixelForValue(-3), yscale.getPixelForValue(0));
-		ctx_tm.lineTo( xscale.getPixelForValue(3), yscale.getPixelForValue(0));
-		ctx_tm.stroke();
-		ctx_tm.beginPath();
-		ctx_tm.moveTo( xscale.getPixelForValue(0), yscale.getPixelForValue(-3.5));
-		ctx_tm.lineTo( xscale.getPixelForValue(0), yscale.getPixelForValue(3.5));
-		ctx_tm.stroke();
-
-		var text ='';
-		var textWidth = 0;
-		text = '熟酒';
-		textWidth = ctx_tm.measureText( text ).width;
-		ctx_tm.fillText( text, xscale.getPixelForValue(2.5)-(textWidth/2), yscale.getPixelForValue(2.5)-(fontSize/2)) ;
-		text = '薫酒';
-		textWidth = ctx_tm.measureText( text ).width;
-		ctx_tm.fillText( text, xscale.getPixelForValue(-2.5)-(textWidth/2), yscale.getPixelForValue(2.5)-(fontSize/2)) ;
-		text = '酵酒';
-		textWidth = ctx_tm.measureText( text ).width;
-		ctx_tm.fillText( text, xscale.getPixelForValue(2.5)-(textWidth/2), yscale.getPixelForValue(-2.5)-(fontSize/2)) ;
-		text = '爽酒';
-		textWidth = ctx_tm.measureText( text ).width;
-		ctx_tm.fillText( text, xscale.getPixelForValue(-2.5)-(textWidth/2), yscale.getPixelForValue(-2.5)-(fontSize/2)) ;
-		text = '香が豊か';
-		textWidth = ctx_tm.measureText( text ).width;
-		ctx_tm.fillText( text, xscale.getPixelForValue(0)-(textWidth/2), yscale.getPixelForValue(4.5)) ;
-		text = '香が静か';
-		textWidth = ctx_tm.measureText( text ).width;
-		ctx_tm.fillText( text, xscale.getPixelForValue(0)-(textWidth/2), yscale.getPixelForValue(-4.5)) ;
-		text = '味が濃い';
-		textWidth = ctx_tm.measureText( text ).width;
-		ctx_tm.fillText( text, xscale.getPixelForValue(4.5)-(textWidth), yscale.getPixelForValue(0)) ;
-		text = '味が淡い';
-		textWidth = ctx_tm.measureText( text ).width;
-		ctx_tm.fillText( text, xscale.getPixelForValue(-4.5), yscale.getPixelForValue(0)) ;
-
-}
-
-function calcLabel(tooltipItems, data) {
-	var item = data.datasets[tooltipItems.datasetIndex];
-	return item.label + "：精米歩合" + (item.data[0].r / RADIUS_SCALE);
-}
-
-function draw_chart(){
-	let datas_tm = [];
-	let datas_rc = [];
-	let rgba = '';
-	for (let list of datas_sake) {
-
-		datas_tm.push({
-			label: list[0],
-			data: [{x: list[1], y: list[2], r: list[3]*RADIUS_SCALE}],
-			href: list[4]
-		});
-
-		// レーダーチャート用データセット作成
-		datas_rc.push({
-			label: list[0],
-			hitRadius: 2,
-			href: list[4],
-			data: list[5]
-		});
-
-	}
-
-	new Chart(ctx_tm,
-		{
-			plugins: [{
-				beforeDraw: drawBackground
-			}],
-			type: 'bubble',
-			data: {
-				datasets: datas_tm
-			},
-			options: {
-				plugins: 	{
-					colorschemes: {
-						scheme: 'brewer.GnBu9'
-					}
-				},
-				tooltips:{
-						mode: 'nearest',
-				    callbacks:
-				    {
-				        label: calcLabel
-				    }
-				},
-				legend: {
-					display: true,
-					position: 'top',
-					labels: {
-						fontSize: 10,
-					}
-				},
-				scales: {
-					yAxes: [{
-						display: false,
-						scaleLabel: {
-							display: false,
-						},
-						ticks: {
-							suggestedMin: -5,
-							suggestedMax:  5
-						}
-					}],
-					xAxes: [{
-						display: false,
-						scaleLabel: {
-							display: false,
-						},
-						ticks: {
-							suggestedMin: -5,
-							suggestedMax:  5
-						}
-					}]
-				},
-				onClick: function (e, el) {
-            if (! el || el.length === 0) return;
-						data = el[0]._chart.data.datasets[el[0]._datasetIndex];
-						console.log('onClick : label ' + data.label);
-						console.log('onClick : href ' + data.href);
-						location.href= data.href;
-        },
-	      onHover: function(e, el) {
-	        $("#tasting_map").css("cursor", el[0] ? "pointer" : "default");
-	      }
-			}
-		});
-		new Chart(ctx_rc, {
-			type: 'radar',
-			data: {
-				labels: radar_labels,
-				datasets: datas_rc,
-			},
-			options: {
-				plugins: 	{
-					colorschemes: {
-						scheme: 'brewer.GnBu9'
-					}
-				},
-				scale: {
-					ticks: {
-						showLabelBackdrop: false,
-						max: 10,
-						min: 0,
-						stepSize: 2
-					}
-				},
-				legend: {
-						display: true,
-						position: 'top',
-						labels: {
-							fontSize: 10,
-						},
-						onHover: function(e) {
-			         e.target.style.cursor = 'pointer';
-			      }
-				},
-				onHover: function(e, el) {
-				  if (el.length) e.target.style.cursor = 'pointer';
-				  else e.target.style.cursor = 'default';
-		    },
-				onClick: function (e, el) {
-          if (! el || el.length === 0) return;
-					data = el[0]._chart.data.datasets[el[0]._datasetIndex];
-					console.log('onClick : label ' + data.label);
-					console.log('onClick : href ' + data.href);
-					location.href= data.href;
-        },
-			}
-		});
+function init() {
+//	new SakeChart(datas_sake,'tasting_map').drawMap();
+//	new SakeChart(datas_sake,'radar_chart').drawRadar();
+	var sake = new SakeChart();
+	sake.setData(datas_sake);
+	sake.drawMap('tasting_map');
+	sake.drawRadar('radar_chart');
 }
 
 </script>
@@ -342,40 +129,6 @@ function draw_chart(){
 </div>
 <h4 class=" c-small_headline c-left"><span>純米大吟醸　神の蔵（1.8L／720ml）</span></h4>
 <p class=" c-body"><span class=" d-larger_font">5,500円／3,000円<br>甘い果実を思わせるフルーティーな香りと、やや軽快でなめらかな味わいが特徴です。</span></p>
-<div style="position: relative; width:100%; ">
-<canvas id="chart_01_sake"></canvas>
-</div>
-<script>
-	var ctx_01_sake = document.getElementById('chart_01_sake').getContext('2d');
-	var myRadarChart = new Chart(ctx_01_sake, {
-		type: 'radar',
-		data: {
-			labels:['硬度柔度', '精米歩合', '日本酒度', '酸度', 'アミノ酸度', 'アルコール度数' ],
-			datasets: [
-				{
-					label: '純米大吟醸　神の蔵',
-					backgroundColor: 'rgba(150,150,150,0.2)',
-					borderColor: 'rgba(150,150,150,1)',
-					pointBackgroundColor: 'rgba(150,150,150,1)',
-					pointBorderColor: '#fff',
-					pointHoverBackgroundColor: '#fff',
-					pointHoverBorderColor: 'rgba(179,181,198,1)',
-					hitRadius: 10,
-					data: [7, 9, 3, 7, 2, 5]
-				},
-			]
-		},
-		options: {
-			scale: {
-				ticks: {
-					max: 10,
-					min: 0,
-					stepSize: 2
-				}
-			}
-		}
-	});
-</script>
 
 </div>
 <div class=" column -column2">
