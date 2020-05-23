@@ -115,7 +115,7 @@ function draw_chart(){
 		});
 	}
 
-	new Chart(ctx, 
+	new Chart(ctx_tm, 
 		{
 			type: 'bubble', 
 			data: { 
@@ -174,6 +174,42 @@ function draw_chart(){
 </div>
 <h4 class=" c-small_headline c-left"><span>純米大吟醸　神の蔵（1.8L／720ml）</span></h4>
 <p class=" c-body"><span class=" d-larger_font">5,500円／3,000円<br>甘い果実を思わせるフルーティーな香りと、やや軽快でなめらかな味わいが特徴です。</span></p>
+<div style="position: relative; width:100%; ">
+<canvas id="chart_01_sake"></canvas>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.js"></script>
+<script>
+	var ctx_01_sake = document.getElementById('chart_01_sake').getContext('2d');
+	var myRadarChart = new Chart(ctx_01_sake, {
+		type: 'radar',
+		data: {
+			labels:['硬度柔度', '精米歩合', '日本酒度', '酸度', 'アミノ酸度', 'アルコール度数' ], 
+			datasets: [
+				{
+					label: '純米大吟醸　神の蔵',
+					backgroundColor: 'rgba(150,150,150,0.2)',
+					borderColor: 'rgba(150,150,150,1)',
+					pointBackgroundColor: 'rgba(150,150,150,1)',
+					pointBorderColor: '#fff',
+					pointHoverBackgroundColor: '#fff',
+					pointHoverBorderColor: 'rgba(179,181,198,1)',
+					hitRadius: 10,
+					data: [7, 9, 3, 7, 2, 5]
+				},
+			]
+		},
+		options: {
+			scale: {
+				ticks: {
+					max: 10,
+					min: 0,
+					stepSize: 2
+				}
+			}
+		}
+	});	
+</script>
+
 </div>
 <div class=" column -column2">
 <div class="c-none c-center">
